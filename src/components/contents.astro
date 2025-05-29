@@ -21,39 +21,86 @@ function timeAgo(dateString: string | number | Date) {
 }
 ---
 
-<div class="container-fluid my-5 d-flex justify-content-center">
-    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-4 video-container" style="width: 80vw; max-width: 1920px;">
-        {filteredVideos.map((video) => {
-            const videoId = video.url.split("/").pop();
-            return (
-                <div class="col-12 col-md-6 col-xl-4 d-flex flex-column align-items-center video-item" data-title={video.titulo.toLowerCase()}>
-                    <a href={`/video/${videoId}`} class="video-thumb-link w-100" style="text-decoration:none;">
-                        <div class="video-frame-wrapper">
-                            <img src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`} alt={video.titulo} style="width:100%;height:100%;object-fit:cover;" loading="lazy" />
+<div class="row g-3 g-md-4">
+    {filteredVideos.map((video) => {
+        const videoId = video.url.split("/").pop();
+        return (
+            <div class="col-6 col-md-4 col-lg-3 video-item" data-title={video.titulo.toLowerCase()}>
+                <a href={`/video/${videoId}`} class="text-decoration-none d-block">
+                    <div class="video-card">
+                        <div class="video-frame-wrapper mb-2">
+                            <img src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`} alt={video.titulo} class="w-100 h-100" style="object-fit:cover;" loading="lazy" />
                         </div>
-                    </a>
-                    <p class="text-white mt-2 mb-0 w-100 text-center">
-                        {video.titulo}
-                    </p>
-                    <span class="text-secondary mb-4" style="font-size:0.95em;">
-                        • {parseInt(video.views).toLocaleString()} views {timeAgo(video.date)}
-                    </span>
-                </div>
-            );
-        })}
-    </div>
+                        <div class="video-info px-1">
+                            <h3 class="text-white mb-1 fs-6 fw-semibold video-title">
+                                {video.titulo}
+                            </h3>
+                            <p class="text-secondary small mb-0 video-meta">
+                                {parseInt(video.views).toLocaleString()} views • {timeAgo(video.date)}
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        );
+    })}
 </div>
 
 <style>
     .video-frame-wrapper {
         width: 100%;
         aspect-ratio: 16 / 9;
-        border-radius: 1.5rem;
+        border-radius: 1rem;
         overflow: hidden;
         background: #000;
+        transition: transform 0.2s ease;
     }
-    .video-thumb-link:hover img {
-        filter: brightness(0.8);
-        transition: filter 0.2s;
+    
+    .video-card:hover .video-frame-wrapper {
+        transform: scale(1.02);
+    }
+    
+    .video-card:hover img {
+        filter: brightness(0.9);
+    }
+    
+    .video-title {
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        height: 2.6em;
+    }
+    
+    .video-meta {
+        opacity: 0.8;
+    }
+    
+    @media (max-width: 576px) {
+        .video-frame-wrapper {
+            border-radius: 0.8rem;
+        }
+        
+        .video-title {
+            font-size: 0.9rem !important;
+        }
+        
+        .video-meta {
+            font-size: 0.75rem !important;
+        }
+        
+        .video-info {
+            padding-left: 0.25rem !important;
+            padding-right: 0.25rem !important;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .col-6 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
     }
 </style>

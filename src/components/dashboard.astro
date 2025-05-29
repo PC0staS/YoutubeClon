@@ -3,6 +3,31 @@ import Navbar from "./navbar.astro"
 import Contents from "./contents.astro"
 import Footer from "./footer.astro"
 ---
+
 <Navbar />
-<Contents />
+<main class="container-fluid px-2 px-md-3 py-3">
+  <div class="row justify-content-center">
+    <div class="col-12 col-xl-10">
+      <Contents />
+    </div>
+  </div>
+</main>
 <Footer />
+
+<style>
+  @media (max-width: 576px) {
+    h1 {
+      font-size: 1.8rem !important;
+    }
+    main {
+      padding-top: 1rem !important;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .container-fluid {
+      padding-left: 0.5rem !important;
+      padding-right: 0.5rem !important;
+    }
+  }
+</style>
