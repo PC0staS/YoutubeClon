@@ -100,26 +100,23 @@ function timeAgo(dateString: string) {
               {Array.isArray(video.comentarios) &&
               video.comentarios.length > 0 ? (
                 <div class="d-flex flex-column gap-3">
-                  {video.comentarios.map((comentario: Comment, idx: number) => {
+                  {video.comentarios.map((comentario, idx) => {
                     const profileImg = comentario.authorProfileImageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(comentario.author)}&background=222&color=fff&size=48`;
                     return (
-                      <div class="d-flex align-items-start bg-grey-dark rounded p-3">
+                      <div class="d-flex align-items-start bg-grey-dark rounded p-3" style="gap: 1rem; min-width:0;">
                         <img
                           src={profileImg}
                           alt={comentario.author}
-                          class="rounded-circle me-3"
+                          class="rounded-circle flex-shrink-0"
                           width="48"
                           height="48"
                           loading="lazy"
+                          style="display:block;object-fit:cover;"
                         />
-                        <div>
-                          <div class="fw-bold small">{comentario.author}</div>
-                          <div class="text-secondary small mb-1">
-                            {new Date(
-                              comentario.publishedAt
-                            ).toLocaleDateString()}
-                          </div>
-                          <div class="text-white">{comentario.text}</div>
+                        <div style="min-width:0;flex:1 1 0;overflow:hidden;">
+                          <div class="fw-bold small" style="word-break:break-all;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;">{comentario.author}</div>
+                          <div class="text-secondary small mb-1" style="white-space:nowrap;">{new Date(comentario.publishedAt).toLocaleDateString()}</div>
+                          <div class="text-white" style="word-break:break-word;">{comentario.text}</div>
                         </div>
                       </div>
                     );

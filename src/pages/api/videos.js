@@ -17,10 +17,13 @@ async function fetchComments(videoId) {
   if (!data.items) return [];
   return data.items.map(item => {
     const snippet = item.snippet.topLevelComment.snippet;
-    const author = snippet.authorDisplayName;
-    const authorProfileImageUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(author)}&background=222&color=fff&size=48`;
+    // Validar que la URL sea de YouTube, si no, usar avatar generado
+    let authorProfileImageUrl = snippet.authorProfileImageUrl;
+    if (!authorProfileImageUrl || !authorProfileImageUrl.startsWith('https://yt3.ggpht.com/')) {
+      authorProfileImageUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(snippet.authorDisplayName)}&background=222&color=fff&size=48`;
+    }
     return {
-      author,
+      author: snippet.authorDisplayName,
       text: snippet.textDisplay,
       publishedAt: snippet.publishedAt,
       authorProfileImageUrl
