@@ -1,22 +1,17 @@
 ---
 import { videos } from "../data/videos.js";
 
-// You can filter videos as needed, for example, show all videos:
 const filteredVideos = videos;
 
-function timeAgo(dateString: string | number | Date) {
-    if (!dateString) return "Fecha desconocida"; // Handle missing dates
-
+function timeAgo(dateString: string) {
+    if (!dateString) return "Fecha desconocida";
     const now = new Date();
     const date = new Date(dateString);
-
-    if (isNaN(date.getTime())) return "Fecha inválida"; // Handle invalid dates
-
+    if (isNaN(date.getTime())) return "Fecha inválida";
     const diffMs = now.getTime() - date.getTime();
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const diffMonths = Math.floor(diffDays / 30);
     const diffYears = Math.floor(diffDays / 365);
-
     if (diffYears > 0)
         return `hace ${diffYears} año${diffYears > 1 ? "s" : ""}`;
     if (diffMonths > 0)
@@ -24,35 +19,37 @@ function timeAgo(dateString: string | number | Date) {
     if (diffDays > 0) return `hace ${diffDays} día${diffDays > 1 ? "s" : ""}`;
     return "Hoy";
 }
+
+function getVideoId(url: string) {
+    // Extracts the video ID from the embed URL
+    const match = url.match(/embed\/([\w-]+)/);
+    return match ? match[1] : null;
+}
 ---
 
 <div class="container-fluid my-5 d-flex justify-content-center">
     <div class="row row-cols-1 row-cols-sm-1 row-cols-md-4 video-container" style="width: 80vw; max-width: 1920px;">
         {
-            filteredVideos.map((video) => (
+            filteredVideos.map((video) => {
+                const videoId = getVideoId(video.url);
+                return (
                 <div class="col-12 col-md-6 col-xl-4 d-flex flex-column align-items-center video-item" data-title={video.titulo.toLowerCase()}>
-                    <div class="video-frame-wrapper">
-                        <iframe
-                            src={video.url}
-                            title={video.titulo}
-                            allowfullscreen
-                            loading="lazy"
-                            style="width:100%; height:100%; border:0;"
-                        />
-                    </div>
+                    <a href={`/video/${videoId}`} class="video-thumb-link w-100" style="text-decoration:none;">
+                        <div class="video-frame-wrapper">
+                            <img src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`} alt={video.titulo} style="width:100%;height:100%;object-fit:cover;" loading="lazy" />
+                        </div>
+                    </a>
                     <p class="text-white mt-2 mb-0 w-100 text-center">
                         {video.titulo}
                     </p>
                     <span class="text-secondary mb-4" style="font-size:0.95em;">
-                        • {parseInt(video.views).toLocaleString()} views{" "}
-                        {timeAgo(video.date)}
+                        • {parseInt(video.views).toLocaleString()} views {timeAgo(video.date)}
                     </span>
                 </div>
-            ))
+            )})
         }
     </div>
 </div>
-
 
 <style>
     .video-frame-wrapper {
@@ -61,5 +58,9 @@ function timeAgo(dateString: string | number | Date) {
         border-radius: 1.5rem;
         overflow: hidden;
         background: #000;
+    }
+    .video-thumb-link:hover img {
+        filter: brightness(0.8);
+        transition: filter 0.2s;
     }
 </style>
