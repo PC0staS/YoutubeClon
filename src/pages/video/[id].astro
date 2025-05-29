@@ -84,7 +84,7 @@ function timeAgo(dateString: string) {
               </a></div>
             </div>
             {/* Sección de comentarios */}
-            <div class="text-white text-start ms-5 mt-4 bg-upload p-3 rounded">
+            <div class="text-white text-start ms-5 mt-4 bg-upload rounded p-4">
               {/* Título de la sección de comentarios */}
               <h5>Comentarios</h5>
               {/* Si hay comentarios, los muestra en una lista, si no, muestra un mensaje */}
@@ -92,31 +92,34 @@ function timeAgo(dateString: string) {
               video.comentarios.length > 0 ? (
                 <div class="d-flex flex-column gap-3">
                   {/* Mapea cada comentario a un bloque visual con avatar, autor, fecha y texto */}
-                  {video.comentarios.map((comentario, idx) => (
-                    <div class="d-flex align-items-start bg-grey-dark rounded p-3">
-                      {/* Avatar generado a partir del nombre del autor */}
-                      <img
-                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(comentario.author)}&background=222&color=fff&size=48`}
-                        alt={comentario.author}
-                        class="rounded-circle me-3"
-                        width="48"
-                        height="48"
-                        loading="lazy"
-                      />
-                      <div>
-                        {/* Nombre del autor */}
-                        <div class="fw-bold small">{comentario.author}</div>
-                        {/* Fecha del comentario */}
-                        <div class="text-secondary small mb-1">
-                          {new Date(
-                            comentario.publishedAt
-                          ).toLocaleDateString()}
+                  {video.comentarios.map((comentario, idx) => {
+                    // Use authorProfileImageUrl if available, otherwise fallback to generated avatar
+                    const profileImg = comentario.authorProfileImageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(comentario.author)}&background=222&color=fff&size=48`;
+                    return (
+                      <div class="d-flex align-items-start bg-grey-dark rounded p-3">
+                        <img
+                          src={profileImg}
+                          alt={comentario.author}
+                          class="rounded-circle me-3"
+                          width="48"
+                          height="48"
+                          loading="lazy"
+                        />
+                        <div>
+                          {/* Nombre del autor */}
+                          <div class="fw-bold small">{comentario.author}</div>
+                          {/* Fecha del comentario */}
+                          <div class="text-secondary small mb-1">
+                            {new Date(
+                              comentario.publishedAt
+                            ).toLocaleDateString()}
+                          </div>
+                          {/* Texto del comentario */}
+                          <div class="text-white">{comentario.text}</div>
                         </div>
-                        {/* Texto del comentario */}
-                        <div class="text-white">{comentario.text}</div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <p>No hay comentarios para este video.</p>

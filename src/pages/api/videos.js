@@ -1,12 +1,7 @@
 import fetch from 'node-fetch';
-import dotenv from 'dotenv';
-import fs from 'fs';
 
-dotenv.config();
-
-const API_KEY = process.env.GOOGLE_API_KEY;
-// Hardcoded playlist ID for the channel's uploads playlist
-const UPLOADS_PLAYLIST_ID = 'UUHHvk-VDgD8pP2AN2AmX8FQ'; // Replace with the correct playlist ID
+const API_KEY = import.meta.env.GOOGLE_API_KEY;
+const UPLOADS_PLAYLIST_ID = 'UUHHvk-VDgD8pP2AN2AmX8FQ';
 
 async function fetchComments(videoId) {
   const url = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=10&key=${API_KEY}`;
@@ -19,18 +14,16 @@ async function fetchComments(videoId) {
     return {
       author: snippet.authorDisplayName,
       text: snippet.textDisplay,
-      publishedAt: snippet.publishedAt,
-      authorProfileImageUrl: snippet.authorProfileImageUrl
+      publishedAt: snippet.publishedAt
     };
   });
 }
 
-async function fetchVideos() {
+export async function GET() {
   const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${UPLOADS_PLAYLIST_ID}&maxResults=10&key=${API_KEY}`;
   const response = await fetch(url);
   if (!response.ok) {
-    console.error(`Error fetching playlist items: ${response.statusText}`);
-    return;
+    return new Response(JSON.stringify({ error: 'Failed to fetch playlist' }), { status: 500 });
   }
   const data = await response.json();
 
@@ -39,8 +32,7 @@ async function fetchVideos() {
     const statsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoIds}&key=${API_KEY}`;
     const statsResponse = await fetch(statsUrl);
     if (!statsResponse.ok) {
-      console.error(`Error fetching video statistics: ${statsResponse.statusText}`);
-      return;
+      return new Response(JSON.stringify({ error: 'Failed to fetch video stats' }), { status: 500 });
     }
     const statsData = await statsResponse.json();
 
@@ -55,16 +47,11 @@ async function fetchVideos() {
         date: item.snippet.publishedAt,
         views: videoStats?.statistics?.viewCount || 0,
         descripcion: videoStats?.snippet?.description || '',
-        comentarios: await comments,
+        comentarios: comments,
       });
     }
-
-    const fileContent = `export const videos = ${JSON.stringify(videos, null, 2)};`;
-    fs.writeFileSync('src/data/videos.js', fileContent);
-    console.log('Videos guardados en src/data/videos.js');
+    return new Response(JSON.stringify(videos), { status: 200 });
   } else {
-    console.error('No se encontraron videos en la lista de reproducción.');
+    return new Response(JSON.stringify({ error: 'No videos found' }), { status: 404 });
   }
 }
-
-fetchVideos();

@@ -3,7 +3,7 @@ import { videos } from "../data/videos.js";
 
 const filteredVideos = videos;
 
-function timeAgo(dateString: string) {
+function timeAgo(dateString: string | number | Date) {
     if (!dateString) return "Fecha desconocida";
     const now = new Date();
     const date = new Date(dateString);
@@ -19,20 +19,13 @@ function timeAgo(dateString: string) {
     if (diffDays > 0) return `hace ${diffDays} día${diffDays > 1 ? "s" : ""}`;
     return "Hoy";
 }
-
-function getVideoId(url: string) {
-    // Extracts the video ID from the embed URL
-    const match = url.match(/embed\/([\w-]+)/);
-    return match ? match[1] : null;
-}
 ---
 
 <div class="container-fluid my-5 d-flex justify-content-center">
     <div class="row row-cols-1 row-cols-sm-1 row-cols-md-4 video-container" style="width: 80vw; max-width: 1920px;">
-        {
-            filteredVideos.map((video) => {
-                const videoId = getVideoId(video.url);
-                return (
+        {filteredVideos.map((video) => {
+            const videoId = video.url.split("/").pop();
+            return (
                 <div class="col-12 col-md-6 col-xl-4 d-flex flex-column align-items-center video-item" data-title={video.titulo.toLowerCase()}>
                     <a href={`/video/${videoId}`} class="video-thumb-link w-100" style="text-decoration:none;">
                         <div class="video-frame-wrapper">
@@ -46,8 +39,8 @@ function getVideoId(url: string) {
                         • {parseInt(video.views).toLocaleString()} views {timeAgo(video.date)}
                     </span>
                 </div>
-            )})
-        }
+            );
+        })}
     </div>
 </div>
 

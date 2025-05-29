@@ -9,7 +9,8 @@ export const videos = [
       {
         "author": "@Skidward28",
         "text": "si reporto por copy alguien de yt se tendra que ver el video para corroborarlo (cara de demonio sonrriendo)",
-        "publishedAt": "2024-07-15T16:15:02Z"
+        "publishedAt": "2024-07-15T16:15:02Z",
+        "authorProfileImageUrl": "https://yt3.ggpht.com/ytc/AIdro_lQcbrF5xM55EwulEB3_FHfleKk1L9mP0vDe1hTZM5JcQ=s48-c-k-c0x00ffffff-no-rj"
       }
     ]
   },
@@ -23,7 +24,8 @@ export const videos = [
       {
         "author": "@Skidward28",
         "text": "este video me dio ganas de instalar 60 gigas de apen en la xbox (mi portatil fijo q no lo tira) para jugar una partida y aburrirme x no saber ni q arma es buena y cual no ni nada de el juego",
-        "publishedAt": "2023-07-29T18:25:47Z"
+        "publishedAt": "2023-07-29T18:25:47Z",
+        "authorProfileImageUrl": "https://yt3.ggpht.com/ytc/AIdro_lQcbrF5xM55EwulEB3_FHfleKk1L9mP0vDe1hTZM5JcQ=s48-c-k-c0x00ffffff-no-rj"
       }
     ]
   },
@@ -53,7 +55,8 @@ export const videos = [
       {
         "author": "@alvareez_5779",
         "text": "primero",
-        "publishedAt": "2022-09-06T13:53:45Z"
+        "publishedAt": "2022-09-06T13:53:45Z",
+        "authorProfileImageUrl": "https://yt3.ggpht.com/B-VhaXtNMW8ruLQ748H5mG0o8nUw3fNJe7OOCjC4lJ8VhVz5YwAq6wD8IH36J5pKx2Fv-G7OKn4=s48-c-k-c0x00ffffff-no-rj"
       }
     ]
   },
@@ -75,12 +78,14 @@ export const videos = [
       {
         "author": "@lucasromeromarcial4956",
         "text": "no mateis al chaval q tenia razon",
-        "publishedAt": "2022-04-13T19:31:58Z"
+        "publishedAt": "2022-04-13T19:31:58Z",
+        "authorProfileImageUrl": "https://yt3.ggpht.com/ytc/AIdro_mce1FIp17Sh43e4dnqIBv3gfj51rbK96X8yuKssrY=s48-c-k-c0x00ffffff-no-rj"
       },
       {
         "author": "@lucasromeromarcial4956",
         "text": "vi la peli de acepte las once",
-        "publishedAt": "2022-04-13T19:31:45Z"
+        "publishedAt": "2022-04-13T19:31:45Z",
+        "authorProfileImageUrl": "https://yt3.ggpht.com/ytc/AIdro_mce1FIp17Sh43e4dnqIBv3gfj51rbK96X8yuKssrY=s48-c-k-c0x00ffffff-no-rj"
       }
     ]
   },
