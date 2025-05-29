@@ -13,6 +13,7 @@
     "@clerk/astro": "^2.8.1",
     "astro": "^5.8.0",
     "astro-bootstrap": "^0.7.2",
-    "bootstrap": "^5.3.6"
+    "bootstrap": "^5.3.6",
+    "clerk": "^0.8.3"
   }
 }
