@@ -1,0 +1,308 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Check authentication - you might want to add admin authentication here
+const isAdmin = true; // Replace with actual admin check
+
+if (!isAdmin) {
+  return Astro.redirect('/');
+}
+---
+
+<Layout>
+  <div class="container-fluid py-4 text-white">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="mb-4">🔧 YouTube Clone - System Dashboard</h1>
+        
+        <!-- System Status Cards -->
+        <div class="row mb-4">
+          <div class="col-md-3">
+            <div class="card bg-dark text-white">
+              <div class="card-body">
+                <h5 class="card-title">API Status</h5>
+                <div id="api-status" class="status-indicator">
+                  <span class="badge bg-secondary">Checking...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-dark text-white">
+              <div class="card-body">
+                <h5 class="card-title">Cache Status</h5>
+                <div id="cache-status" class="status-indicator">
+                  <span class="badge bg-secondary">Checking...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-dark text-white">
+              <div class="card-body">
+                <h5 class="card-title">Last Update</h5>
+                <div id="last-update" class="status-indicator">
+                  <span class="badge bg-secondary">Loading...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-dark text-white">
+              <div class="card-body">
+                <h5 class="card-title">Video Count</h5>
+                <div id="video-count" class="status-indicator">
+                  <span class="badge bg-secondary">Loading...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="card bg-dark text-white">
+              <div class="card-body">
+                <h5 class="card-title">Manual Actions</h5>
+                <button id="force-update" class="btn btn-warning me-2">
+                  🔄 Force Update Videos
+                </button>
+                <button id="clear-cache" class="btn btn-info me-2">
+                  🗑️ Clear Cache
+                </button>
+                <button id="test-api" class="btn btn-success me-2">
+                  🧪 Test API
+                </button>
+                <a href="/api/health" target="_blank" class="btn btn-outline-light">
+                  📊 Health Check
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logs -->
+        <div class="row">
+          <div class="col-12">
+            <div class="card bg-dark text-white">
+              <div class="card-body">
+                <h5 class="card-title">System Information</h5>
+                <pre id="system-info" class="bg-black p-3 rounded" style="max-height: 400px; overflow-y: auto;">
+Loading system information...
+                </pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Automation Status -->
+        <div class="row mt-4">
+          <div class="col-12">
+            <div class="card bg-dark text-white">
+              <div class="card-body">
+                <h5 class="card-title">Automation Configuration</h5>
+                <div id="automation-info">
+                  <p><strong>Environment Variables:</strong></p>
+                  <ul class="list-unstyled">
+                    <li id="env-google-api">🔑 Google API Key: <span class="badge bg-secondary">Checking...</span></li>
+                    <li id="env-cron-secret">🔐 Cron Secret: <span class="badge bg-secondary">Checking...</span></li>
+                    <li id="env-clerk">👤 Clerk Keys: <span class="badge bg-secondary">Checking...</span></li>
+                  </ul>
+                  
+                  <p><strong>Endpoints:</strong></p>
+                  <ul class="list-unstyled">
+                    <li>📊 Videos API: <code>/api/videos</code></li>
+                    <li>🔄 Update API: <code>/api/update-videos</code></li>
+                    <li>❤️ Health Check: <code>/api/health</code></li>
+                  </ul>
+
+                  <p><strong>Automation Setup:</strong></p>
+                  <div class="bg-black p-3 rounded">
+                    <p class="mb-1"><strong>Cron Job Example:</strong></p>
+                    <code>0 */6 * * * curl -H "Authorization: Bearer YOUR_SECRET" https://yoursite.com/api/update-videos</code>
+                    
+                    <p class="mb-1 mt-3"><strong>GitHub Actions:</strong></p>
+                    <p class="text-muted">Check .github/workflows/update-videos.yml</p>
+                    
+                    <p class="mb-1 mt-3"><strong>External Services:</strong></p>
+                    <p class="text-muted">Use Uptime Robot, Pingdom, or similar to call update endpoint</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let cronSecret: string = '';
+
+    // Load system status
+    async function loadSystemStatus(): Promise<void> {
+      try {
+        // Check health endpoint
+        const healthResponse = await fetch('/api/health');
+        const health = await healthResponse.json();
+        
+        // Update status indicators
+        updateStatus('api-status', healthResponse.ok ? 'success' : 'danger', 
+          healthResponse.ok ? 'Online' : 'Error');
+        
+        // Update environment status
+        updateEnvStatus('env-google-api', health.environment?.hasApiKey);
+        updateEnvStatus('env-cron-secret', health.environment?.hasCronSecret);
+        
+        // Display system info
+        const systemInfoElement = document.getElementById('system-info');
+        if (systemInfoElement) {
+          systemInfoElement.textContent = JSON.stringify(health, null, 2);
+        }
+        
+        // Check videos API
+        const videosResponse = await fetch('/api/videos');
+        const videosData = await videosResponse.json();
+        
+        updateStatus('cache-status', videosData.cached ? 'info' : 'warning', 
+          videosData.cached ? 'Cached' : 'Fresh');
+        
+        if (videosData.updatedAt) {
+          const lastUpdate = new Date(videosData.updatedAt).toLocaleString();
+          const lastUpdateElement = document.getElementById('last-update');
+          if (lastUpdateElement) {
+            lastUpdateElement.innerHTML = `<span class="badge bg-info">${lastUpdate}</span>`;
+          }
+        }
+        
+        if (videosData.videos) {
+          const videoCountElement = document.getElementById('video-count');
+          if (videoCountElement) {
+            videoCountElement.innerHTML = `<span class="badge bg-success">${videosData.videos.length}</span>`;
+          }
+        }
+        
+      } catch (error: unknown) {
+        console.error('Error loading system status:', error);
+        const systemInfoElement = document.getElementById('system-info');
+        if (systemInfoElement) {
+          systemInfoElement.textContent = 'Error loading system status: ' + 
+            (error instanceof Error ? error.message : String(error));
+        }
+      }
+    }
+
+    function updateStatus(elementId: string, type: string, text: string): void {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.innerHTML = `<span class="badge bg-${type}">${text}</span>`;
+      }
+    }
+
+    function updateEnvStatus(elementId: string, hasValue: boolean): void {
+      const element = document.getElementById(elementId);
+      if (element) {
+        const badge = hasValue ? 
+          '<span class="badge bg-success">✓ Set</span>' : 
+          '<span class="badge bg-danger">✗ Missing</span>';
+        element.innerHTML = element.innerHTML.replace(/<span class="badge.*<\/span>/, badge);
+      }
+    }
+
+    // Manual actions
+    const forceUpdateButton = document.getElementById('force-update');
+    if (forceUpdateButton) {
+      forceUpdateButton.addEventListener('click', async () => {
+        const secret = prompt('Enter CRON_SECRET for authentication:');
+        if (!secret) return;
+        
+        const button = forceUpdateButton as HTMLButtonElement;
+        button.disabled = true;
+        button.textContent = '🔄 Updating...';
+        
+        try {
+          const response = await fetch('/api/update-videos', {
+            headers: { 'Authorization': `Bearer ${secret}` }
+          });
+          const result = await response.json();
+          
+          if (response.ok) {
+            alert('✅ Videos updated successfully!');
+            loadSystemStatus(); // Refresh status
+          } else {
+            alert('❌ Update failed: ' + (result.error || 'Unknown error'));
+          }
+        } catch (error: unknown) {
+          alert('❌ Update failed: ' + 
+            (error instanceof Error ? error.message : String(error)));
+        } finally {
+          button.disabled = false;
+          button.textContent = '🔄 Force Update Videos';
+        }
+      });
+    }
+
+    const clearCacheButton = document.getElementById('clear-cache');
+    if (clearCacheButton) {
+      clearCacheButton.addEventListener('click', () => {
+        // Note: This would require a cache-clearing endpoint
+        alert('ℹ️ Cache clearing requires server restart or TTL expiration');
+      });
+    }
+
+    const testApiButton = document.getElementById('test-api');
+    if (testApiButton) {
+      testApiButton.addEventListener('click', async () => {
+        const button = testApiButton as HTMLButtonElement;
+        button.disabled = true;
+        button.textContent = '🧪 Testing...';
+        
+        try {
+          const response = await fetch('/api/videos');
+          const data = await response.json();
+          
+          if (response.ok && data.videos) {
+            alert(`✅ API Test Successful!\n\nVideos loaded: ${data.videos.length}\nCache status: ${data.cached ? 'Cached' : 'Fresh'}\nFallback: ${data.fallback ? 'Yes' : 'No'}`);
+          } else {
+            alert('⚠️ API responded but data seems incomplete');
+          }
+        } catch (error: unknown) {
+          alert('❌ API Test Failed: ' + 
+            (error instanceof Error ? error.message : String(error)));
+        } finally {
+          button.disabled = false;
+          button.textContent = '🧪 Test API';
+        }
+      });
+    }
+
+    // Auto-refresh every 30 seconds
+    setInterval(loadSystemStatus, 30000);
+    
+    // Initial load
+    loadSystemStatus();
+  </script>
+
+  <style>
+    .status-indicator {
+      font-size: 0.9rem;
+    }
+    
+    .card {
+      border: 1px solid #333;
+    }
+    
+    pre {
+      font-size: 0.8rem;
+      line-height: 1.2;
+    }
+    
+    code {
+      background: #333;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.85rem;
+    }
+  </style>
+</Layout>

@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  youtube-clone:
+    build: .
+    ports:
+      - "4321:4321"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  # Optional: Redis for advanced caching
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped

@@ -1,6 +1,6 @@
 ---
 import SignIn from '../components/SignIn.astro';
-import DashboardDynamic from '../components/dashboard-dynamic.astro';
+import Dashboard from '../components/dashboard.astro';
 import Layout from '../layouts/Layout.astro';
 import { SignedIn, SignedOut } from '@clerk/astro/components';
 ---
@@ -10,6 +10,6 @@ import { SignedIn, SignedOut } from '@clerk/astro/components';
 		<SignIn />
 	</SignedOut>
 	<SignedIn>
-		<DashboardDynamic />
+		<Dashboard />
 	</SignedIn>
 </Layout>
