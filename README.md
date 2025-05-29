@@ -259,11 +259,9 @@ This project is licensed under the MIT License.
 ## 🎯 Roadmap
 
 - [ ] Multiple channel support
-- [ ] Video upload functionality
 - [ ] Advanced comment system
 - [ ] Live streaming support
 - [ ] Mobile app
-- [ ] Analytics dashboard
 
 ---
 
