@@ -14,6 +14,8 @@
     "astro": "^5.8.0",
     "astro-bootstrap": "^0.7.2",
     "bootstrap": "^5.3.6",
-    "clerk": "^0.8.3"
+    "clerk": "^0.8.3",
+    "dotenv": "^16.5.0",
+    "node-cron": "^4.0.7"
   }
 }
