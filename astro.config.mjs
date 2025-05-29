@@ -1,10 +1,10 @@
 import { defineConfig } from "astro/config";
-import node from "@astrojs/node";
+import netlify from "@astrojs/netlify";
 import clerk from "@clerk/astro";
 
 export default defineConfig({
   integrations: [clerk()],
-  adapter: node({ mode: "standalone" }),
+  adapter: netlify(),
   output: "server",
   host: true,
 });
