@@ -1,0 +1,9 @@
+.bg-dark-grey{
+    background-color: #0f0f0f !important;
+}
+.bg-upload{
+    background-color: #272727 !important;
+}
+.bg-upload:hover{
+    background-color: #4f4f4f !important;
+}

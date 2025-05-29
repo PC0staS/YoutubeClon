@@ -1,0 +1,47 @@
+---
+import { UserButton } from "@clerk/astro/components"
+---
+<nav class="navbar sticky-top bg-dark-grey text-white">
+  <div class="container-fluid">
+    <a class="d-flex align-items-center navbar-brand" href="#">
+      <img src="/logo.png" alt="Logo" width="30" height="20" class="d-inline-block align-text-top me-1">
+      <p class="navbar-brand text-white fw-bold fs-5 mb-1" >Youtube</p>
+    </a>
+    <div class="align-items-center d-flex">
+        <div class="dropdown me-3">
+            <button type="button" class="btn bg-upload text-white  rounded-pill" 
+                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                + Subir
+            </button>
+            <ul class="dropdown-menu dropdown-menu-dark me-4 dropdown-menu-end"> 
+                <li><a class="dropdown-item" href="#">Work In Progress</a></li>
+                <li><a class="dropdown-item disabled" href="#">Subir video</a></li>
+                <li><a class="dropdown-item disabled" href="#">Subir playlist</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item disabled" href="#">Subir canal</a></li>
+            </ul>
+        </div>
+        
+        <UserButton />
+    </div>
+  </div>
+</nav>
+
+<style>
+
+:global(.cl-avatarBox) {
+  width: 45px !important;
+  height: 45px !important;
+}
+.dropdown-menu.bg-dark-grey {
+  color: #fff !important;
+  background-color: #0f0f0f !important;
+}
+.dropdown-menu.bg-dark-grey .dropdown-item {
+  color: #fff !important;
+}
+.dropdown-menu.bg-dark-grey .dropdown-item.disabled {
+  color: #888 !important;
+}
+</style>
+
