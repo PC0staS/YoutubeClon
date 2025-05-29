@@ -47,6 +47,44 @@ import { UserButton } from "@clerk/astro/components";
     </div>
   </div>
 </nav>
+<script>
+  // Esperar a que todo esté completamente cargado
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      console.log("Search init after full load");
+      const searchInput = document.querySelector('.youtube-search-input');
+      const searchButton = document.getElementById('search-button');
+
+      function filterVideos() {
+        if (!searchInput) return;
+        const query = (searchInput as HTMLInputElement).value.toLowerCase();
+        console.log("Filtering for:", query);
+        const videoItems = document.querySelectorAll('.video-item');
+
+        videoItems.forEach(item => {
+          const title = item.getAttribute('data-title');
+          if (title) {
+            const matches = title.toLowerCase().includes(query);
+            // Aplicar estilos más fuertes
+            if (matches) {
+              (item as HTMLElement).style.cssText = "display: flex !important;";
+            } else {
+              (item as HTMLElement).style.cssText = "display: none !important;";
+            }
+          }
+        });
+      }
+      
+      if (searchButton) {
+        searchButton.addEventListener('click', filterVideos);
+      }
+      
+      if (searchInput) {
+        searchInput.addEventListener('input', filterVideos);
+      }
+    }, 300); // Espera 300ms para asegurar que todo esté renderizado
+  });
+</script>
 
 <style>
 :global(.cl-avatarBox) {
