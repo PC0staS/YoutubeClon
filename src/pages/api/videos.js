@@ -17,11 +17,13 @@ async function fetchComments(videoId) {
   if (!data.items) return [];
   return data.items.map(item => {
     const snippet = item.snippet.topLevelComment.snippet;
+    const author = snippet.authorDisplayName;
+    const authorProfileImageUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(author)}&background=222&color=fff&size=48`;
     return {
-      author: snippet.authorDisplayName,
+      author,
       text: snippet.textDisplay,
       publishedAt: snippet.publishedAt,
-      authorProfileImageUrl: snippet.authorProfileImageUrl
+      authorProfileImageUrl
     };
   });
 }
