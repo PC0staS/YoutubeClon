@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+// fetch is available globally in modern environments
 import dotenv from 'dotenv';
 import fs from 'fs';
 import cron from 'node-cron';

@@ -1,5 +1,5 @@
 // Webhook endpoint for real-time YouTube updates
-import fetch from 'node-fetch';
+// fetch is available globally in Netlify Functions
 
 const API_KEY = import.meta.env.GOOGLE_API_KEY;
 const WEBHOOK_SECRET = import.meta.env.WEBHOOK_SECRET || import.meta.env.CRON_SECRET;

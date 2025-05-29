@@ -1,5 +1,5 @@
 // API endpoint para servir videos dinámicamente
-import fetch from 'node-fetch';
+// fetch is available globally in Netlify Functions
 
 const API_KEY = import.meta.env.GOOGLE_API_KEY;
 const UPLOADS_PLAYLIST_ID = 'UUHHvk-VDgD8pP2AN2AmX8FQ';
