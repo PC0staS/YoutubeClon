@@ -51,7 +51,7 @@ function timeAgo(dateString: string) {
     video ? (
       <div class="container-fluid px-2 px-md-3 py-3 py-md-5">
         <div class="row g-3 g-md-4">
-          <div class="col-12 col-lg-9 d-flex flex-column">
+          <div class="col-12 col-lg-8 d-flex flex-column">
             <div class="video-detail-player mb-3 mb-md-4 w-100">
               <iframe
                 src={video.url}
@@ -126,7 +126,7 @@ function timeAgo(dateString: string) {
               )}
             </div>
           </div>
-          <div class="col-12 col-lg-3">
+          <div class="col-12 col-lg-4">
             <h5 class="text-white mb-3 px-2 px-md-0">Más videos</h5>
             <div class="d-flex flex-column gap-2 gap-md-3 px-2 px-md-0">
               {videos
@@ -141,13 +141,13 @@ function timeAgo(dateString: string) {
                       <img
                         src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
                         alt={v.titulo}
-                        style="width: 80px; height: 45px; object-fit: cover; border-radius: 0.5rem; flex-shrink: 0;"
+                        style="width: 168px; height: 94px; object-fit: cover; border-radius: 0.5rem; flex-shrink: 0;"
                         class="d-md-none"
                       />
                       <img
                         src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
                         alt={v.titulo}
-                        style="width: 100px; height: 56px; object-fit: cover; border-radius: 0.5rem; flex-shrink: 0;"
+                        style="width: 168px; height: 94px; object-fit: cover; border-radius: 0.5rem; flex-shrink: 0;"
                         class="d-none d-md-block"
                       />
                       <div class="ms-2 ms-md-3 flex-grow-1 min-width-0">
@@ -189,7 +189,6 @@ function timeAgo(dateString: string) {
   <style>
     .video-detail-player {
       width: 100%;
-      max-width: 900px;
       aspect-ratio: 16 / 9;
       margin: 0 auto;
       background: #000;
@@ -220,7 +219,7 @@ function timeAgo(dateString: string) {
       }
       
       .video-sidebar-title {
-        font-size: 0.8rem !important;
+        font-size: 0.85rem !important;
         -webkit-line-clamp: 3;
         max-height: 3.6em;
       }
