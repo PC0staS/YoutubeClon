@@ -14,11 +14,13 @@
     "@astrojs/netlify": "^6.3.4",
     "@astrojs/node": "^9.2.2",
     "@clerk/astro": "^2.8.1",
+    "@clerk/clerk-react": "^5.31.8",
     "astro": "^5.8.1",
     "astro-bootstrap": "^0.7.2",
     "bootstrap": "^5.3.6",
     "clerk": "^0.8.3",
     "dotenv": "^16.5.0",
+    "netlify": "^21.5.0",
     "node-cron": "^4.0.7"
   }
 }
