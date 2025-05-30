@@ -40,7 +40,7 @@ export async function GET() {
       return new Response(JSON.stringify({ 
         videos: cachedVideos,
         cached: true,
-        updatedAt: new Date(lastFetch).toISOString()
+        updatedAt: new Date(lastFetch + (new Date().getTimezoneOffset() * 60000)).toISOString()
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
@@ -86,7 +86,7 @@ export async function GET() {
       return new Response(JSON.stringify({ 
         videos: videos,
         cached: false,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date(Date.now() + (new Date().getTimezoneOffset() * 60000)).toISOString()
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }

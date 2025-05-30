@@ -31,8 +31,9 @@ function timeAgo(dateString: string) {
   {
     video ? (      // Si se encuentra el video, muestra el contenido principal
       <div class="container-fluid px-2 px-md-3 py-3 py-md-5">
-        <div class="row g-3 g-md-4">          {/* Columna principal: reproductor y detalles del video */}
-          <div class="col-12 col-lg-8 d-flex flex-column">
+        <div class="row g-3 g-md-4">
+          {/* Columna principal: reproductor y detalles del video */}
+          <div class="col-12 col-lg-9 d-flex flex-column">
             {/* Reproductor de video (iframe de YouTube) */}
             <div class="video-detail-player mb-3 mb-md-4 w-100">
               <iframe
@@ -115,7 +116,7 @@ function timeAgo(dateString: string) {
               )}
             </div>
           </div>          {/* Columna lateral: lista de más videos */}
-          <div class="col-12 col-lg-4">
+          <div class="col-12 col-lg-3">
             <h5 class="text-white mb-3 px-2 px-md-0">Más videos</h5>
             <div class="d-flex flex-column gap-2 gap-md-3 px-2 px-md-0">
               {/* Muestra los demás videos como enlaces con miniatura y título */}
@@ -128,16 +129,17 @@ function timeAgo(dateString: string) {
                       href={`/video/${videoId}`}
                       class="d-flex text-decoration-none text-white video-sidebar-item p-2 rounded bg-grey-dark"
                     >
-                      {/* Miniatura del video */}                      <img
+                      {/* Miniatura del video */}
+                      <img
                         src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
                         alt={v.titulo}
-                        style="width: 168px; height: 94px; object-fit: cover; border-radius: 0.5rem; flex-shrink: 0;"
+                        style="width: 80px; height: 45px; object-fit: cover; border-radius: 0.5rem; flex-shrink: 0;"
                         class="d-md-none"
                       />
                       <img
                         src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
                         alt={v.titulo}
-                        style="width: 168px; height: 94px; object-fit: cover; border-radius: 0.5rem; flex-shrink: 0;"
+                        style="width: 100px; height: 56px; object-fit: cover; border-radius: 0.5rem; flex-shrink: 0;"
                         class="d-none d-md-block"
                       />
                       <div class="ms-2 ms-md-3 flex-grow-1 min-width-0">
@@ -166,8 +168,10 @@ function timeAgo(dateString: string) {
     )
   }
   {/* Estilos para el reproductor y la barra lateral */}
-  <style>    .video-detail-player {
+  <style>
+    .video-detail-player {
       width: 100%;
+      max-width: 900px;
       aspect-ratio: 16 / 9;
       margin: 0 auto;
       background: #000;
@@ -198,7 +202,7 @@ function timeAgo(dateString: string) {
       }
       
       .video-sidebar-title {
-        font-size: 0.85rem !important;
+        font-size: 0.8rem !important;
         -webkit-line-clamp: 3;
         max-height: 3.6em;
       }
