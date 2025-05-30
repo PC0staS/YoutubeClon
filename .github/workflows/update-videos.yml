@@ -8,20 +8,11 @@ jobs:
   update-videos:
     runs-on: ubuntu-latest
     steps:
-      - name: Update Videos from YouTube
+      - name: Actualizar videos
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: |
-          response=$(curl -s -w "%{http_code}" \
-            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            "${{ secrets.SITE_URL }}/api/update-videos")
-          
-          http_code=$(echo "$response" | tail -n1)
-          body=$(echo "$response" | head -n -1)
-          
-          if [ "$http_code" = "200" ]; then
-            echo "✅ Videos updated successfully"
-            echo "$body"
-          else
-            echo "❌ Failed to update videos (HTTP $http_code)"
-            echo "$body"
-            exit 1
-          fi
+          curl -v -X POST \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            https://recopilaciones.jonastown.es/api/update-videos
