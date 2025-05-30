@@ -1,9 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import fs from 'fs';
-
-const legalNotice = fs.readFileSync(new URL('../../LEGAL_NOTICE.md', import.meta.url), 'utf-8');
-const privacyPolicy = fs.readFileSync(new URL('../../PRIVACY_POLICY.md', import.meta.url), 'utf-8');
+import LegalNotice from '../../LEGAL_NOTICE.md';
+import PrivacyPolicyContent from '../../PRIVACY_POLICY.md';
 ---
 
 <Layout>
@@ -12,13 +10,13 @@ const privacyPolicy = fs.readFileSync(new URL('../../PRIVACY_POLICY.md', import.
     <section class="bg-grey-dark rounded p-4 mb-4">
       <h2 class="h4 text-white mb-3">Aviso Legal</h2>
       <div class="text-white" style="white-space:pre-line;">
-        {legalNotice}
+        <LegalNotice />
       </div>
     </section>
     <section class="bg-grey-dark rounded p-4">
       <h2 class="h4 text-white mb-3">Política de Privacidad</h2>
       <div class="text-white" style="white-space:pre-line;">
-        {privacyPolicy}
+        <PrivacyPolicyContent />
       </div>
     </section>
   </div>
