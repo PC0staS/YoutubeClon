@@ -1,0 +1,25 @@
+---
+import Layout from "../layouts/Layout.astro";
+import fs from 'fs';
+
+const legalNotice = fs.readFileSync(new URL('../../LEGAL_NOTICE.md', import.meta.url), 'utf-8');
+const privacyPolicy = fs.readFileSync(new URL('../../PRIVACY_POLICY.md', import.meta.url), 'utf-8');
+---
+
+<Layout>
+  <div class="container py-5">
+    <h1 class="text-white mb-4">Aviso Legal y Política de Privacidad</h1>
+    <section class="bg-grey-dark rounded p-4 mb-4">
+      <h2 class="h4 text-white mb-3">Aviso Legal</h2>
+      <div class="text-white" style="white-space:pre-line;">
+        {legalNotice}
+      </div>
+    </section>
+    <section class="bg-grey-dark rounded p-4">
+      <h2 class="h4 text-white mb-3">Política de Privacidad</h2>
+      <div class="text-white" style="white-space:pre-line;">
+        {privacyPolicy}
+      </div>
+    </section>
+  </div>
+</Layout>
