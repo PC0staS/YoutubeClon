@@ -29,7 +29,7 @@ async function fetchComments(videoId) {
   try {
     console.log('Fetching comments for video ID:', videoId);
     
-    const url = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=20&order=time&key=${API_KEY}`;
+    const url = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet,replies&videoId=${videoId}&maxResults=20&order=time&key=${API_KEY}`;
     console.log('YouTube API URL:', url.replace(API_KEY, 'API_KEY_HIDDEN'));
     
     const response = await fetch(url);
@@ -77,12 +77,32 @@ async function fetchComments(videoId) {
     
     const comments = data.items.map(item => {
       const snippet = item.snippet.topLevelComment.snippet;
-      return {
+      const comment = {
+        id: item.id,
         author: snippet.authorDisplayName,
         text: snippet.textDisplay,
         publishedAt: snippet.publishedAt,
-        authorProfileImageUrl: snippet.authorProfileImageUrl
+        authorProfileImageUrl: snippet.authorProfileImageUrl,
+        likeCount: snippet.likeCount || 0,
+        replies: []
       };
+      
+      // Add replies if they exist
+      if (item.replies && item.replies.comments) {
+        comment.replies = item.replies.comments.map(reply => {
+          const replySnippet = reply.snippet;
+          return {
+            id: reply.id,
+            author: replySnippet.authorDisplayName,
+            text: replySnippet.textDisplay,
+            publishedAt: replySnippet.publishedAt,
+            authorProfileImageUrl: replySnippet.authorProfileImageUrl,
+            likeCount: replySnippet.likeCount || 0
+          };
+        });
+      }
+      
+      return comment;
     });
     
     return {

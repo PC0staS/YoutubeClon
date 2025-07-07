@@ -28,160 +28,198 @@ function timeAgo(dateString: string) {
 <Layout>
   {/* Navbar superior */}
   <Navbar />
-  {
-    video ? (      // Si se encuentra el video, muestra el contenido principal
-      <div class="container-fluid px-2 px-md-3 py-3 py-md-5">
-        <div class="row g-3 g-md-4">
-          {/* Columna principal: reproductor y detalles del video */}
-          <div class="col-12 col-lg-9 d-flex flex-column">
-            {/* Reproductor de video (iframe de YouTube) */}
-            <div class="video-detail-player mb-3 mb-md-4 w-100">
-              <iframe
-                src={video.url}
-                title={video.titulo}
-                allowfullscreen
-                loading="lazy"
-                style="width:100%; height:100%; border:0; border-radius:1rem; background:#000;"
-              />
+  {video ? (
+    <div class="container-fluid px-2 px-md-3 py-3 py-md-5">
+      <div class="row g-3 g-md-4">
+        {/* Columna principal: reproductor y detalles del video */}
+        <div class="col-12 col-lg-9 d-flex flex-column">
+          {/* Reproductor de video (iframe de YouTube) */}
+          <div class="video-detail-player mb-3 mb-md-4 w-100">
+            <iframe
+              src={video.url}
+              title={video.titulo}
+              allowfullscreen
+              loading="lazy"
+              style="width:100%; height:100%; border:0; border-radius:1rem; background:#000;"
+            />
+          </div>
+          {/* Título del video */}
+          <h2 class="text-white fw-bold text-start px-2 px-md-3 fs-4 fs-md-2">{video.titulo}</h2>
+          {/* Vistas y fecha relativa */}
+          <div class="text-secondary text-start px-2 px-md-3 mb-3">
+            • {parseInt(video.views).toLocaleString()} views{" "}
+            {timeAgo(video.date)}
+          </div>            {/* Descripción del video en un collapse de Bootstrap */}
+          <div class="text-white text-start px-2 px-md-3 mt-3">
+            <h5 class="fs-5 fs-md-4">Descripción</h5>
+            {/* Botón para mostrar/ocultar la descripción */}
+            <button
+              class="btn btn-outline-secondary btn-sm mb-2"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#descripcionCollapse"
+              aria-expanded="false"
+              aria-controls="descripcionCollapse"
+            >
+              Mostrar/Ocultar descripción
+            </button>
+            {/* Collapse de Bootstrap para la descripción */}
+            <div class="collapse" id="descripcionCollapse">
+              {/* Respeta los saltos de línea en la descripción */}
+              <p style="white-space: pre-line;" class="small">
+                {video.descripcion ?? "Sin descripción disponible."}
+              </p>
             </div>
-            {/* Título del video */}
-            <h2 class="text-white fw-bold text-start px-2 px-md-3 fs-4 fs-md-2">{video.titulo}</h2>
-            {/* Vistas y fecha relativa */}
-            <div class="text-secondary text-start px-2 px-md-3 mb-3">
-              • {parseInt(video.views).toLocaleString()} views{" "}
-              {timeAgo(video.date)}
-            </div>            {/* Descripción del video en un collapse de Bootstrap */}
-            <div class="text-white text-start px-2 px-md-3 mt-3">
-              <h5 class="fs-5 fs-md-4">Descripción</h5>
-              {/* Botón para mostrar/ocultar la descripción */}
-              <button
-                class="btn btn-outline-secondary btn-sm mb-2"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#descripcionCollapse"
-                aria-expanded="false"
-                aria-controls="descripcionCollapse"
+            {/* Botón para ir a YouTube y añadir comentario */}
+            <div><a
+              href={video.url.replace("embed/", "watch?v=")}
+              target="_blank"
+              rel="noopener"
+              class="btn btn-danger btn-sm mt-2"
+            >
+              Ver en YouTube
+            </a></div>
+          </div>            {/* Sección de comentarios */}
+          <div class="text-white text-start px-2 px-md-3 mt-4 bg-upload rounded p-3 p-md-4">
+            {/* Título de la sección de comentarios */}
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="fs-5 fs-md-4 mb-0">Comentarios</h5>
+              <button 
+                id="reloadCommentsBtn" 
+                class="btn-reload"
+                data-video-id={videoId}
+                title="Actualizar comentarios"
               >
-                Mostrar/Ocultar descripción
+                <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16" class="reload-icon">
+                  <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                  <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                </svg>
               </button>
-              {/* Collapse de Bootstrap para la descripción */}
-              <div class="collapse" id="descripcionCollapse">
-                {/* Respeta los saltos de línea en la descripción */}
-                <p style="white-space: pre-line;" class="small">
-                  {video.descripcion ?? "Sin descripción disponible."}
-                </p>
-              </div>
-              {/* Botón para ir a YouTube y añadir comentario */}
-              <div><a
-                href={video.url.replace("embed/", "watch?v=")}
-                target="_blank"
-                rel="noopener"
-                class="btn btn-danger btn-sm mt-2"
-              >
-                Ver en YouTube
-              </a></div>
-            </div>            {/* Sección de comentarios */}
-            <div class="text-white text-start px-2 px-md-3 mt-4 bg-upload rounded p-3 p-md-4">
-              {/* Título de la sección de comentarios */}
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fs-5 fs-md-4 mb-0">Comentarios</h5>
-                <button 
-                  id="reloadCommentsBtn" 
-                  class="btn-reload"
-                  data-video-id={videoId}
-                  title="Actualizar comentarios"
-                >
-                  <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16" class="reload-icon">
-                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
-                  </svg>
-                </button>
-              </div>
-              {/* Si hay comentarios, los muestra en una lista, si no, muestra un mensaje */}
-              <div id="commentsContainer">
-                {Array.isArray(video.comentarios) &&
-                video.comentarios.length > 0 ? (
-                  <div class="d-flex flex-column gap-2 gap-md-3">
-                    {/* Mapea cada comentario a un bloque visual con avatar, autor, fecha y texto */}
-                    {video.comentarios.map((comentario, idx) => {
-                      const profileImg = comentario.authorProfileImageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(comentario.author)}&background=222&color=fff&size=48`;
-                      return (
-                        <div class="d-flex align-items-start bg-grey-dark rounded p-2 p-md-3" style="gap: 0.75rem; min-width:0;">
+            </div>
+            {/* Si hay comentarios, los muestra en una lista, si no, muestra un mensaje */}
+            <div id="commentsContainer">
+              {Array.isArray(video.comentarios) &&
+              video.comentarios.length > 0 ? (
+                <div class="comments-list">
+                  {/* Mapea cada comentario a un bloque visual con avatar, autor, fecha, texto y respuestas */}
+                  {video.comentarios.map((comentario, idx) => {
+                    const profileImg = comentario.authorProfileImageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(comentario.author)}&background=222&color=fff&size=48`;
+                    return (
+                      <div class="comment-thread">
+                        <div class="comment-main">
                           <img
                             src={profileImg}
                             alt={comentario.author}
-                            class="rounded-circle flex-shrink-0"
-                            width="40"
-                            height="40"
+                            class="comment-avatar"
                             loading="lazy"
-                            style="display:block;object-fit:cover;"
                           />
-                          <div style="min-width:0;flex:1 1 0;overflow:hidden;">
-                            <div class="fw-bold small text-truncate">{comentario.author}</div>
-                            <div class="text-secondary small mb-1">{new Date(comentario.publishedAt).toLocaleDateString()}</div>
-                            <div class="text-white small" style="word-break:break-word;line-height:1.4;">{comentario.text}</div>
+                          <div class="comment-content">
+                            <div class="comment-header">
+                              <span class="comment-author">{comentario.author}</span>
+                              <span class="comment-date">{new Date(comentario.publishedAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                            </div>
+                            <div class="comment-text">{comentario.text}</div>
+                            {(comentario as any).likeCount && (comentario as any).likeCount > 0 && (
+                              <div class="comment-likes">
+                                <i class="like-icon">👍</i> {(comentario as any).likeCount}
+                              </div>
+                            )}
                           </div>
                         </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <p class="small">No hay comentarios para este video.</p>
-                )}
-              </div>
-            </div>
-          </div>          {/* Columna lateral: lista de más videos */}
-          <div class="col-12 col-lg-3">
-            <h5 class="text-white mb-3 px-2 px-md-0">Más videos</h5>
-            <div class="d-flex flex-column gap-2 gap-md-3 px-2 px-md-0">
-              {/* Muestra los demás videos como enlaces con miniatura y título */}
-              {videos
-                .filter((v) => v !== video)
-                .map((v) => {
-                  const videoId = v.url.split("/").pop();
-                  return (
-                    <a
-                      href={`/video/${videoId}`}
-                      class="d-flex text-decoration-none text-white video-sidebar-item p-2 rounded bg-grey-dark"
-                    >
-                      {/* Miniatura del video */}
-                      <img
-                        src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
-                        alt={v.titulo}
-                        style="width: 80px; height: 45px; object-fit: cover; border-radius: 0.5rem; flex-shrink: 0;"
-                        class="d-md-none"
-                      />
-                      <img
-                        src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
-                        alt={v.titulo}
-                        style="width: 100px; height: 56px; object-fit: cover; border-radius: 0.5rem; flex-shrink: 0;"
-                        class="d-none d-md-block"
-                      />
-                      <div class="ms-2 ms-md-3 flex-grow-1 min-width-0">
-                        {/* Título del video */}
-                        <div class="fw-bold small text-start video-sidebar-title">{v.titulo}</div>
-                        {/* Vistas y fecha relativa */}
-                        <div class="text-secondary small text-start">
-                          {parseInt(v.views).toLocaleString()} views{" "}
-                          {timeAgo(v.date)}
-                        </div>
+                        {/* Renderizar respuestas si existen */}
+                        {(comentario as any).replies && Array.isArray((comentario as any).replies) && (comentario as any).replies.length > 0 && (
+                          <div class="replies-container">
+                            {(comentario as any).replies.map((reply: any, replyIdx: number) => {
+                              const replyProfileImg = reply.authorProfileImageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(reply.author)}&background=333&color=fff&size=32`;
+                              return (
+                                <div class="reply-item">
+                                  <img
+                                    src={replyProfileImg}
+                                    alt={reply.author}
+                                    class="reply-avatar"
+                                    loading="lazy"
+                                  />
+                                  <div class="reply-content">
+                                    <div class="reply-header">
+                                      <span class="reply-author">{reply.author}</span>
+                                      <span class="reply-date">{new Date(reply.publishedAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                                    </div>
+                                    <div class="reply-text">{reply.text}</div>
+                                    {reply.likeCount && reply.likeCount > 0 && (
+                                      <div class="reply-likes">
+                                        <i class="like-icon">👍</i> {reply.likeCount}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
-                    </a>
-                  );
-                })}
+                    );
+                  })}
+                </div>
+              ) : (
+                <p class="no-comments">No hay comentarios para este video.</p>
+              )}
             </div>
+            {/* Texto de ayuda siempre debajo de los comentarios */}
+            <div class="comment-help-text" style="color:#b0b0b0;">
+              Si no cargan los comentarios, pulsa el botón de recargar ⟳
+            </div>
+          </div>
+        </div>          {/* Columna lateral: lista de más videos */}
+        <div class="col-12 col-lg-3">
+          <h5 class="text-white mb-3 px-2 px-md-0">Más videos</h5>
+          <div class="d-flex flex-column gap-2 gap-md-3 px-2 px-md-0">
+            {/* Muestra los demás videos como enlaces con miniatura y título */}
+            {videos
+              .filter((v) => v !== video)
+              .map((v) => {
+                const videoId = v.url.split("/").pop();
+                return (
+                  <a
+                    href={`/video/${videoId}`}
+                    class="d-flex text-decoration-none text-white video-sidebar-item p-2 rounded bg-grey-dark"
+                  >
+                    {/* Miniatura del video */}
+                    <img
+                      src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
+                      alt={v.titulo}
+                      style="width: 80px; height: 45px; object-fit: cover; border-radius: 0.5rem; flex-shrink: 0;"
+                      class="d-md-none"
+                    />
+                    <img
+                      src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
+                      alt={v.titulo}
+                      style="width: 100px; height: 56px; object-fit: cover; border-radius: 0.5rem; flex-shrink: 0;"
+                      class="d-none d-md-block"
+                    />
+                    <div class="ms-2 ms-md-3 flex-grow-1 min-width-0">
+                      {/* Título del video */}
+                      <div class="fw-bold small text-start video-sidebar-title">{v.titulo}</div>
+                      {/* Vistas y fecha relativa */}
+                      <div class="text-secondary small text-start">
+                        {parseInt(v.views).toLocaleString()} views{" "}
+                        {timeAgo(v.date)}
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
           </div>
         </div>
       </div>
-    ) : (      // Si no se encuentra el video, muestra un mensaje de error
-      <div class="container-fluid px-2 px-md-3 py-3 py-md-5 text-center text-white">
-        <h2 class="fs-3 fs-md-2">Video no encontrado</h2>
-        <a href="/" class="btn btn-secondary mt-3">
-          Volver al inicio
-        </a>
-      </div>
-    )
-  }
+    </div>
+  ) : (      // Si no se encuentra el video, muestra un mensaje de error
+    <div class="container-fluid px-2 px-md-3 py-3 py-md-5 text-center text-white">
+      <h2 class="fs-3 fs-md-2">Video no encontrado</h2>
+      <a href="/" class="btn btn-secondary mt-3">
+        Volver al inicio
+      </a>
+    </div>
+  )}
   {/* Estilos para el reproductor y la barra lateral */}
   <style>
     .video-detail-player {
@@ -235,11 +273,11 @@ function timeAgo(dateString: string) {
     
     /* Estilos del botón de recarga */
     .btn-reload {
-      background: transparent;
+      background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
+      border-radius: 6px;
       padding: 8px;
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 0.8);
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
@@ -268,10 +306,12 @@ function timeAgo(dateString: string) {
     
     .reload-icon {
       transition: transform 0.3s ease;
+      width: 14px;
+      height: 14px;
     }
     
     .btn-reload:hover .reload-icon {
-      transform: rotate(90deg);
+      transform: rotate(180deg);
     }
     
     .btn-reload.loading .reload-icon {
@@ -332,8 +372,12 @@ function timeAgo(dateString: string) {
       const reloadBtn = document.getElementById('reloadCommentsBtn');
       const commentsContainer = document.getElementById('commentsContainer');
       
+      // Debug inicial para verificar contenido
+      console.log('Comments container content on load:', commentsContainer ? commentsContainer.innerHTML : 'Container not found');
+      console.log('Video data available:', typeof window !== 'undefined');
+      
       // Función para mostrar mensajes de estado elegantes
-      function showStatusMessage(message, type) {
+      function showStatusMessage(message: string, type: string) {
         // Remover mensaje anterior si existe
         const existingMsg = document.querySelector('.status-message');
         if (existingMsg) {
@@ -355,75 +399,157 @@ function timeAgo(dateString: string) {
         }, 3000);
       }
       
-      if (reloadBtn && commentsContainer) {
-        reloadBtn.addEventListener('click', async function() {
-          let videoId = this.dataset.videoId;
-          console.log('Button clicked, raw video ID:', videoId);
+      // Función para recargar comentarios
+      async function reloadComments() {
+        if (!reloadBtn || !commentsContainer) return;
+        
+        let videoId = reloadBtn.dataset.videoId;
+        console.log('Button clicked, raw video ID:', videoId);
+        
+        // Extract video ID from current URL if not available
+        if (!videoId) {
+          const urlParts = window.location.pathname.split('/');
+          videoId = urlParts[urlParts.length - 1];
+          console.log('Extracted video ID from URL:', videoId);
+        }
+        
+        if (!videoId) {
+          console.error('No video ID found');
+          showStatusMessage('Error: No se pudo obtener el ID del video', 'error');
+          return;
+        }
+        
+        // Mostrar estado de carga
+        (reloadBtn as any).disabled = true;
+        reloadBtn.classList.add('loading');
+        
+        try {
+          const apiUrl = '/api/comments/' + videoId;
+          console.log('Fetching from:', apiUrl);
           
-          // Extract video ID from current URL if not available
-          if (!videoId) {
-            const urlParts = window.location.pathname.split('/');
-            videoId = urlParts[urlParts.length - 1];
-            console.log('Extracted video ID from URL:', videoId);
-          }
+          const response = await fetch(apiUrl);
+          const data = await response.json();
           
-          if (!videoId) {
-            console.error('No video ID found');
-            showStatusMessage('Error: No se pudo obtener el ID del video', 'error');
-            return;
-          }
+          console.log('API Response:', data);
           
-          // Mostrar estado de carga
-          this.disabled = true;
-          this.classList.add('loading');
-          
-          try {
-            const apiUrl = '/api/comments/' + videoId;
-            console.log('Fetching from:', apiUrl);
-            
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-            
-            console.log('API Response:', data);
-            
-            if (data.success && data.comments) {
-              // Actualizar comentarios
-              if (data.comments.length > 0) {
-                const commentsHtml = data.comments.map(function(comment) {
-                  const profileImg = comment.authorProfileImageUrl || 
-                    'https://ui-avatars.com/api/?name=' + encodeURIComponent(comment.author) + '&background=222&color=fff&size=48';
-                  
-                  return '<div class="d-flex align-items-start bg-grey-dark rounded p-2 p-md-3" style="gap: 0.75rem; min-width:0;">' +
-                    '<img src="' + profileImg + '" alt="' + comment.author + '" class="rounded-circle flex-shrink-0" width="40" height="40" loading="lazy" style="display:block;object-fit:cover;" />' +
-                    '<div style="min-width:0;flex:1 1 0;overflow:hidden;">' +
-                      '<div class="fw-bold small text-truncate">' + comment.author + '</div>' +
-                      '<div class="text-secondary small mb-1">' + new Date(comment.publishedAt).toLocaleDateString() + '</div>' +
-                      '<div class="text-white small" style="word-break:break-word;line-height:1.4;">' + comment.text + '</div>' +
-                    '</div>' +
-                  '</div>';
-                }).join('');
-                
-                commentsContainer.innerHTML = '<div class="d-flex flex-column gap-2 gap-md-3">' + commentsHtml + '</div>';
-                showStatusMessage(data.comments.length + ' comentarios actualizados', 'success');
-              } else {
-                commentsContainer.innerHTML = '<p class="small">No hay comentarios para este video.</p>';
-                showStatusMessage('No se encontraron comentarios', 'success');
-              }
+          if (data.success && data.comments) {
+            // Actualizar comentarios
+            if (data.comments.length > 0) {
+              // Generar HTML exactamente igual al que genera Astro
+              let commentsHtml = '<div class="comments-list">';
               
+              data.comments.forEach(function(comment: any) {
+                const profileImg = comment.authorProfileImageUrl || 
+                  `https://ui-avatars.com/api/?name=${encodeURIComponent(comment.author)}&background=222&color=fff&size=48`;
+                
+                // Escapar caracteres especiales en el texto
+                const escapeHtml = (text: string) => {
+                  const div = document.createElement('div');
+                  div.textContent = text;
+                  return div.innerHTML;
+                };
+                
+                commentsHtml += `
+                  <div class="comment-thread">
+                    <div class="comment-main">
+                      <img src="${profileImg}" alt="${escapeHtml(comment.author)}" class="comment-avatar" loading="lazy">
+                      <div class="comment-content">
+                        <div class="comment-header">
+                          <span class="comment-author">${escapeHtml(comment.author)}</span>
+                          <span class="comment-date">${new Date(comment.publishedAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                        </div>
+                        <div class="comment-text">${escapeHtml(comment.text)}</div>`;
+                
+                // Agregar likes si existen
+                if (comment.likeCount && comment.likeCount > 0) {
+                  commentsHtml += `
+                        <div class="comment-likes">
+                          <i class="like-icon">👍</i> ${comment.likeCount}
+                        </div>`;
+                }
+                
+                commentsHtml += `
+                      </div>
+                    </div>`;
+                
+                // Agregar respuestas si existen
+                if (comment.replies && comment.replies.length > 0) {
+                  commentsHtml += `
+                    <div class="replies-container">`;
+                  
+                  comment.replies.forEach(function(reply: any) {
+                    const replyProfileImg = reply.authorProfileImageUrl || 
+                      `https://ui-avatars.com/api/?name=${encodeURIComponent(reply.author)}&background=333&color=fff&size=32`;
+                    
+                    commentsHtml += `
+                      <div class="reply-item">
+                        <img src="${replyProfileImg}" alt="${escapeHtml(reply.author)}" class="reply-avatar" loading="lazy">
+                        <div class="reply-content">
+                          <div class="reply-header">
+                            <span class="reply-author">${escapeHtml(reply.author)}</span>
+                            <span class="reply-date">${new Date(reply.publishedAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                          </div>
+                          <div class="reply-text">${escapeHtml(reply.text)}</div>`;
+                    
+                    if (reply.likeCount && reply.likeCount > 0) {
+                      commentsHtml += `
+                          <div class="reply-likes">
+                            <i class="like-icon">👍</i> ${reply.likeCount}
+                          </div>`;
+                    }
+                    
+                    commentsHtml += `
+                        </div>
+                      </div>`;
+                  });
+                  
+                  commentsHtml += `
+                    </div>`;
+                }
+                
+                commentsHtml += `
+                  </div>`;
+              });
+              
+              commentsHtml += '</div>';
+              
+              // Reemplazar contenido
+              commentsContainer.innerHTML = commentsHtml;
+              
+              // Count total interactions (comments + replies)
+              let totalInteractions = data.comments.length;
+              data.comments.forEach(function(comment: any) {
+                if (comment.replies) {
+                  totalInteractions += comment.replies.length;
+                }
+              });
+              
+              showStatusMessage(totalInteractions + ' comentarios actualizados', 'success');
             } else {
-              console.error('API error:', data.error);
-              throw new Error(data.error || 'Error al cargar comentarios');
+              commentsContainer.innerHTML = '<p class="no-comments">No hay comentarios para este video.</p>';
+              showStatusMessage('No se encontraron comentarios', 'success');
             }
             
-          } catch (error) {
-            console.error('Error reloading comments:', error);
-            showStatusMessage('Error al actualizar comentarios', 'error');
+          } else {
+            console.error('API error:', data.error);
+            throw new Error(data.error || 'Error al cargar comentarios');
           }
           
-          // Restaurar botón
-          this.disabled = false;
-          this.classList.remove('loading');
-        });
+        } catch (error) {
+          console.error('Error reloading comments:', error);
+          showStatusMessage('Error al actualizar comentarios', 'error');
+        }
+        
+        // Restaurar botón
+        (reloadBtn as any).disabled = false;
+        reloadBtn.classList.remove('loading');
+      }
+      
+      // Ejecutar solo cuando se haga clic en el botón
+      if (reloadBtn && commentsContainer) {
+        reloadBtn.addEventListener('click', reloadComments);
+        // Cargar comentarios automáticamente al entrar
+        reloadComments();
       }
     });
   </script>
