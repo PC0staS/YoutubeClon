@@ -1,0 +1,125 @@
+---
+// Test page to verify API functionality
+---
+<html>
+<head>
+  <title>Test Comments API</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #222; color: white; }
+    .test-section { margin: 20px 0; padding: 20px; border: 1px solid #555; }
+    button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    pre { background: #333; padding: 10px; overflow-x: auto; }
+    .error { color: #ff6b6b; }
+    .success { color: #51cf66; }
+    input { padding: 5px; margin: 5px; background: #333; color: white; border: 1px solid #555; }
+  </style>
+</head>
+<body>
+  <h1>Test Comments API</h1>
+  
+  <div class="test-section">
+    <h3>Test Video ID Extraction</h3>
+    <p>Prueba diferentes formatos de Video ID para ver si se extraen correctamente:</p>
+    
+    <div>
+      <label>Ingresa un Video ID o URL de YouTube:</label><br>
+      <input type="text" id="videoIdInput" value="dQw4w9WgXcQ" style="width: 400px;" />
+      <button onclick="testVideoId()">Test API</button>
+    </div>
+    
+    <div>
+      <h4>Videos populares para probar (con comentarios conocidos):</h4>
+      <ul>
+        <li><button onclick="testSpecificVideo('dQw4w9WgXcQ')">Rick Roll (dQw4w9WgXcQ)</button> - Video muy popular con muchos comentarios</li>
+        <li><button onclick="testSpecificVideo('jNQXAC9IVRw')">Me at the zoo (jNQXAC9IVRw)</button> - Primer video de YouTube</li>
+        <li><button onclick="testSpecificVideo('9bZkp7q19f0')">PSY - Gangnam Style (9bZkp7q19f0)</button> - Video viral</li>
+        <li><button onclick="testSpecificVideo('-SqcDmEQ3E0')">Tu video actual (-SqcDmEQ3E0)</button></li>
+      </ul>
+    </div>
+    
+    <div>
+      <h4>URLs de ejemplo para probar:</h4>
+      <ul>
+        <li><code>dQw4w9WgXcQ</code> (Video ID directo)</li>
+        <li><code>https://youtube.com/embed/dQw4w9WgXcQ</code></li>
+        <li><code>https://youtube.com/watch?v=dQw4w9WgXcQ</code></li>
+        <li><code>https://youtu.be/dQw4w9WgXcQ</code></li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="test-section">
+    <h3>API Response:</h3>
+    <pre id="apiResponse">Haz click en "Test API" para ver la respuesta...</pre>
+  </div>
+  
+  <div class="test-section">
+    <h3>Environment Variables Check:</h3>
+    <button onclick="checkEnv()">Check API Key</button>
+    <pre id="envResponse"></pre>
+  </div>
+  
+  <script>
+    async function testVideoId() {
+      const input = document.getElementById('videoIdInput');
+      const responseDiv = document.getElementById('apiResponse');
+      
+      if (!input || !responseDiv) return;
+      
+      const videoId = input.value;
+      
+      try {
+        responseDiv.innerHTML = 'Loading...';
+        
+        const response = await fetch('/api/comments/' + encodeURIComponent(videoId));
+        const data = await response.json();
+        
+        responseDiv.innerHTML = JSON.stringify(data, null, 2);
+        responseDiv.className = response.ok ? 'success' : 'error';
+        
+      } catch (error) {
+        responseDiv.innerHTML = 'Error: ' + (error instanceof Error ? error.message : String(error));
+        responseDiv.className = 'error';
+      }
+    }
+    
+    async function testSpecificVideo(videoId) {
+      const input = document.getElementById('videoIdInput');
+      if (input) {
+        input.value = videoId;
+      }
+      await testVideoId();
+    }
+    
+    async function checkEnv() {
+      const envDiv = document.getElementById('envResponse');
+      
+      if (!envDiv) return;
+      
+      try {
+        // Test with a known video ID that should have comments
+        const response = await fetch('/api/comments/dQw4w9WgXcQ');
+        const data = await response.json();
+        
+        if (data.error && data.error.includes('API key')) {
+          envDiv.innerHTML = 'ERROR: Google API key not configured properly';
+          envDiv.className = 'error';
+        } else {
+          envDiv.innerHTML = 'API Key appears to be configured correctly';
+          envDiv.className = 'success';
+        }
+        
+      } catch (error) {
+        envDiv.innerHTML = 'Error checking environment: ' + (error instanceof Error ? error.message : String(error));
+        envDiv.className = 'error';
+      }
+    }
+    
+    // Auto-test on page load
+    window.onload = function() {
+      checkEnv();
+    };
+  </script>
+</body>
+</html>

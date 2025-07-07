@@ -95,35 +95,50 @@ function timeAgo(dateString: string) {
               </div>
             </div>
             <div class="text-white text-start px-2 px-md-3 mt-4 bg-upload rounded p-3 p-md-4">
-              <h5 class="fs-5 fs-md-4">Comentarios</h5>
-              {Array.isArray(video.comentarios) &&
-              video.comentarios.length > 0 ? (
-                <div class="d-flex flex-column gap-2 gap-md-3">
-                  {video.comentarios.map((comentario, idx) => {
-                    const profileImg = comentario.authorProfileImageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(comentario.author)}&background=222&color=fff&size=48`;
-                    return (
-                      <div class="d-flex align-items-start bg-grey-dark rounded p-2 p-md-3" style="gap: 0.75rem; min-width:0;">
-                        <img
-                          src={profileImg}
-                          alt={comentario.author}
-                          class="rounded-circle flex-shrink-0"
-                          width="40"
-                          height="40"
-                          loading="lazy"
-                          style="display:block;object-fit:cover;"
-                        />
-                        <div style="min-width:0;flex:1 1 0;overflow:hidden;">
-                          <div class="fw-bold small text-truncate">{comentario.author}</div>
-                          <div class="text-secondary small mb-1">{new Date(comentario.publishedAt).toLocaleDateString()}</div>
-                          <div class="text-white small" style="word-break:break-word;line-height:1.4;">{comentario.text}</div>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fs-5 fs-md-4 mb-0">Comentarios</h5>
+                <button 
+                  id="reloadCommentsBtn" 
+                  class="btn-reload"
+                  data-video-id={videoId}
+                  title="Actualizar comentarios"
+                >
+                  <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16" class="reload-icon">
+                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                  </svg>
+                </button>
+              </div>
+              <div id="commentsContainer">
+                {Array.isArray(video.comentarios) &&
+                video.comentarios.length > 0 ? (
+                  <div class="d-flex flex-column gap-2 gap-md-3">
+                    {video.comentarios.map((comentario, idx) => {
+                      const profileImg = comentario.authorProfileImageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(comentario.author)}&background=222&color=fff&size=48`;
+                      return (
+                        <div class="d-flex align-items-start bg-grey-dark rounded p-2 p-md-3" style="gap: 0.75rem; min-width:0;">
+                          <img
+                            src={profileImg}
+                            alt={comentario.author}
+                            class="rounded-circle flex-shrink-0"
+                            width="40"
+                            height="40"
+                            loading="lazy"
+                            style="display:block;object-fit:cover;"
+                          />
+                          <div style="min-width:0;flex:1 1 0;overflow:hidden;">
+                            <div class="fw-bold small text-truncate">{comentario.author}</div>
+                            <div class="text-secondary small mb-1">{new Date(comentario.publishedAt).toLocaleDateString()}</div>
+                            <div class="text-white small" style="word-break:break-word;line-height:1.4;">{comentario.text}</div>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <p class="small">No hay comentarios para este video.</p>
-              )}
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p class="small">No hay comentarios para este video.</p>
+                )}
+              </div>
             </div>
           </div>
           <div class="col-12 col-lg-4">
@@ -234,6 +249,201 @@ function timeAgo(dateString: string) {
         min-width: 0;
       }
     }
+    
+    /* Estilos del botón de recarga */
+    .btn-reload {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 8px;
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+    }
+    
+    .btn-reload:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+    
+    .btn-reload:active {
+      transform: translateY(0);
+    }
+    
+    .btn-reload:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .reload-icon {
+      transition: transform 0.3s ease;
+    }
+    
+    .btn-reload:hover .reload-icon {
+      transform: rotate(90deg);
+    }
+    
+    .btn-reload.loading .reload-icon {
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Estilos para mensajes de estado */
+    .status-message {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      z-index: 1000;
+      max-width: 300px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transform: translateX(100%);
+      transition: all 0.3s ease;
+    }
+    
+    .status-message.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    
+    .status-message.success {
+      background: rgba(34, 197, 94, 0.9);
+      color: white;
+      border-left: 4px solid #22c55e;
+    }
+    
+    .status-message.error {
+      background: rgba(239, 68, 68, 0.9);
+      color: white;
+      border-left: 4px solid #ef4444;
+    }
+    
+    @media (max-width: 576px) {
+      .status-message {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+      }
+    }
   </style>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const reloadBtn = document.getElementById('reloadCommentsBtn');
+      const commentsContainer = document.getElementById('commentsContainer');
+      
+      // Función para mostrar mensajes de estado elegantes
+      function showStatusMessage(message, type) {
+        // Remover mensaje anterior si existe
+        const existingMsg = document.querySelector('.status-message');
+        if (existingMsg) {
+          existingMsg.remove();
+        }
+        
+        const statusMsg = document.createElement('div');
+        statusMsg.className = 'status-message ' + type;
+        statusMsg.textContent = message;
+        document.body.appendChild(statusMsg);
+        
+        // Mostrar con animación
+        setTimeout(() => statusMsg.classList.add('show'), 10);
+        
+        // Ocultar después de 3 segundos
+        setTimeout(() => {
+          statusMsg.classList.remove('show');
+          setTimeout(() => statusMsg.remove(), 300);
+        }, 3000);
+      }
+      
+      if (reloadBtn && commentsContainer) {
+        reloadBtn.addEventListener('click', async function() {
+          let videoId = this.dataset.videoId;
+          console.log('Button clicked, raw video ID:', videoId);
+          
+          // Extract video ID from current URL if not available
+          if (!videoId) {
+            const urlParts = window.location.pathname.split('/');
+            videoId = urlParts[urlParts.length - 1];
+            console.log('Extracted video ID from URL:', videoId);
+          }
+          
+          if (!videoId) {
+            console.error('No video ID found');
+            showStatusMessage('Error: No se pudo obtener el ID del video', 'error');
+            return;
+          }
+          
+          // Mostrar estado de carga
+          this.disabled = true;
+          this.classList.add('loading');
+          
+          try {
+            const apiUrl = '/api/comments/' + videoId;
+            console.log('Fetching from:', apiUrl);
+            
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            
+            console.log('API Response:', data);
+            
+            if (data.success && data.comments) {
+              // Actualizar comentarios
+              if (data.comments.length > 0) {
+                const commentsHtml = data.comments.map(function(comment) {
+                  const profileImg = comment.authorProfileImageUrl || 
+                    'https://ui-avatars.com/api/?name=' + encodeURIComponent(comment.author) + '&background=222&color=fff&size=48';
+                  
+                  return '<div class="d-flex align-items-start bg-grey-dark rounded p-2 p-md-3" style="gap: 0.75rem; min-width:0;">' +
+                    '<img src="' + profileImg + '" alt="' + comment.author + '" class="rounded-circle flex-shrink-0" width="40" height="40" loading="lazy" style="display:block;object-fit:cover;" />' +
+                    '<div style="min-width:0;flex:1 1 0;overflow:hidden;">' +
+                      '<div class="fw-bold small text-truncate">' + comment.author + '</div>' +
+                      '<div class="text-secondary small mb-1">' + new Date(comment.publishedAt).toLocaleDateString() + '</div>' +
+                      '<div class="text-white small" style="word-break:break-word;line-height:1.4;">' + comment.text + '</div>' +
+                    '</div>' +
+                  '</div>';
+                }).join('');
+                
+                commentsContainer.innerHTML = '<div class="d-flex flex-column gap-2 gap-md-3">' + commentsHtml + '</div>';
+                showStatusMessage(data.comments.length + ' comentarios actualizados', 'success');
+              } else {
+                commentsContainer.innerHTML = '<p class="small">No hay comentarios para este video.</p>';
+                showStatusMessage('No se encontraron comentarios', 'success');
+              }
+              
+            } else {
+              console.error('API error:', data.error);
+              throw new Error(data.error || 'Error al cargar comentarios');
+            }
+            
+          } catch (error) {
+            console.error('Error reloading comments:', error);
+            showStatusMessage('Error al actualizar comentarios', 'error');
+          }
+          
+          // Restaurar botón
+          this.disabled = false;
+          this.classList.remove('loading');
+        });
+      }
+    });
+  </script>
+  
   <Footer />
 </Layout>
